@@ -27,17 +27,30 @@ unless you know what you're doing.
 The following commands are prefixed with `#` if they have to be executed as
 `root`, or with `$` if they should be executed as the testing user.
 
-`# adduser` - create testing user; enter your real name and e-mail address too
-`# su - <newuser>`
+## Step 1: Create a testing user
+
+    # adduser           # create testing user; enter your real name and e-mail address too
+    # su - <newuser>    # authentiy as the new user
+
+## Step 2: Remove everything from your **test user**'s home directory:
+
+**WARNING**: under **NO CIRCUMSTANCES** execute this as your actual user. Make
+sure you've created a testing user and that you've authentified as `<newuser>`
+**EXACTLY** as instructed at **Step 1**.
+
+    $ rm -rf ~/.* ~/*
+
+## Step 3: Bootstrap hacklet
 
 This will bootstrap hacklet and install itself in your current directory (which
 should be `~`):
 
-    $ rm -rf ~.* ~*
     $ export PATH=~/bin/tmp/git-hacklet/bin:$PATH
     $ git clone --recursive git://github.com/flavius/hacklets.git /tmp/git-hacklet
     $ git hacklet install git-hacklet git://github.com/flavius/hacklets.git
     $ rm -rf /tmp/git-hacklet
+
+## Step 4: Install the environment hacklet (optional, but recommended)
 
 After you're done, you can install any hacklet you wish. For example:
 
@@ -50,6 +63,10 @@ After you log out and log in back as `<newuser>`, the alias provided by the
 hacklets project itself will be loaded, which includes the alias `hacklet='git
 hacklet'`, so from now on I'll use the `hacklet` command, instead of `git
 hacklet`
+
+Many hacklets may depend on this, so install it.
+
+## Step 5: Installing further hacklets
 
 A vim hacklet (far from perfect), based on vundle, it will automatically
 install some bundles too, and a `.vimrc`:
