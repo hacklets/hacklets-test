@@ -1,3 +1,5 @@
+# What is a hacklet?
+
 A hacklet is a set of files which, after installation, will be put
 in the current directory.
 
@@ -12,12 +14,8 @@ machnines.
 You can use any git repository as a hacklet, it will work out of the box,
 without any changes at all.
 
-But you can add further customizations. See the Wiki for details.
-
-This is a list of existing hacklets. Feel free to add your own:
-
-* https://github.com/flavius/dotfiles-env
-* https://github.com/flavius/dotfiles-vim
+But you can add further customizations like actions to be taken before or
+after installation. See the Wiki for details.
 
 # How to install
 
@@ -27,12 +25,12 @@ unless you know what you're doing.
 The following commands are prefixed with `#` if they have to be executed as
 `root`, or with `$` if they should be executed as the testing user.
 
-## Step 1: Create a testing user
+### Step 1: Create a testing user
 
     # adduser           # create testing user; enter your real name and e-mail address too
     # su - <newuser>    # authentiy as the new user
 
-## Step 2: Remove everything from your **test user**'s home directory:
+### Step 2: Remove everything from your **test user**'s home directory:
 
 **WARNING**: under **NO CIRCUMSTANCES** execute this as your actual user. Make
 sure you've created a testing user and that you've authentified as `<newuser>`
@@ -40,17 +38,17 @@ sure you've created a testing user and that you've authentified as `<newuser>`
 
     $ rm -rf ~/.* ~/*
 
-## Step 3: Bootstrap hacklet
+### Step 3: Bootstrap hacklet
 
 This will bootstrap hacklet and install itself in your current directory (which
 should be `~`):
 
-    $ export PATH=~/bin/tmp/git-hacklet/bin:$PATH
-    $ git clone --recursive git://github.com/flavius/hacklets.git /tmp/git-hacklet
-    $ git hacklet install git-hacklet git://github.com/flavius/hacklets.git
-    $ rm -rf /tmp/git-hacklet
+    $ export PATH=~/bin/tmp/hacklets-bootstrap/bin:$PATH
+    $ git clone --recursive git://github.com/flavius/hacklets.git /tmp/hacklets-bootstrap
+    $ git hacklet install hacklets git://github.com/flavius/hacklets.git
+    $ rm -rf /tmp/hacklets-boostrap
 
-## Step 4: Install the environment hacklet (optional, but recommended)
+### Step 4: Install the environment hacklet (optional, but recommended)
 
 After you're done, you can install any hacklet you wish. For example:
 
@@ -66,11 +64,23 @@ hacklet`
 
 Many hacklets may depend on this, so install it.
 
-## Step 5: Installing further hacklets
+### Step 5: Installing further hacklets
 
 A vim hacklet (far from perfect), based on vundle, it will automatically
 install some bundles too, and a `.vimrc`:
 
     $ hacklet install dotfiles-vim git://github.com/flavius/dotfiles-vim.git
+
+# List of hacklets
+
+This is a list of existing hacklets. Please note that any git repository can be
+a hacklet. However, the hacklets listed here somehow respect a common
+structure, like the one imposed by `flavius/dotfiles-env`, although it must not
+be this way.
+
+Feel free to add your own:
+
+* https://github.com/flavius/dotfiles-env
+* https://github.com/flavius/dotfiles-vim
 
 **Happy hackleting!**
