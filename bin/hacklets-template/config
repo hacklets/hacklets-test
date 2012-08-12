@@ -1,0 +1,24 @@
+[core]
+    bare = false
+    worktree = ../../
+    editor = ~/bin/vim
+[color]
+    ui = true
+[alias]
+    wdiff = diff --color-words
+    last = log -1 -p HEAD
+    st = status
+    co = checkout
+    ci = commit
+    br = branch
+    sm = submodule
+    cp = cherry-pick
+[github]
+    user = flavius
+    token = 7c8bdf0e6ad5f6fbd9fd29e28080dcc1
+[mergetool]
+    keepBackup = false
+[merge]
+    tool = hvimdiff
+[mergetool "hvimdiff"]
+    cmd = ~/bin/vimdiff -f -d -c \"wincmd J\" \"$MERGED\" \"$LOCAL\" \"$BASE\" \"$REMOTE\"

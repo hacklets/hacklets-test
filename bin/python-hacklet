@@ -1,0 +1,31 @@
+#!/usr/bin/env python3
+
+import os
+import sys
+
+class HackletCollection:
+    """
+    A collection of hacklets
+    """
+    def __init__(self, directory, profile_holder="master"):
+        self.directory = directory
+        self.profile_holder = profile_holder
+        self.__makestructure__()
+    def __makestructure__(self):
+        if False == os.path.isdir('/'.join([self.directory, self.profile_holder])):
+            os.makedirs('/'.join([self.directory, self.profile_holder]))
+    def addhacklet(self):
+        """
+        add a hacklet
+        """
+        pass
+    def listhacklets(self):
+        """
+        list hacklets
+        """
+        pass
+
+
+if __name__ == '__main__':
+    print('/'.join(["/home", "flav"]))
+    COL = HackletCollection(''.join([os.getcwd(), "/", ".hacklets"]), sys.argv[1])

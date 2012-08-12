@@ -1,0 +1,257 @@
+HACKLETS_BASEDIR_NAME=.hacklets
+HACKLETS_REPODIR_NAME="${HACKLETS_BASEDIR_NAME}/master"
+HACKLETS_DIST_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+HACKLETS_EXEC_NAME="${0%/*}"
+
+HACKLETS_PWD=`pwd`
+HACKLETS_BASEDIR="${HACKLETS_PWD}/${HACKLETS_BASEDIR_NAME}"
+HACKLETS_REPODIR="${HACKLETS_PWD}/${HACKLETS_REPODIR_NAME}"
+
+alias hacklets-init='hacklets_init'
+alias hacklets-demo_repos='hacklets_demo_repos'
+alias hacklets-new_profile='hacklets_new_profile'
+alias h='hacklets'
+
+LOG_ENABLED="yes"
+DONOTLOG="no"
+source "$HACKLETS_DIST_DIR/scripts.d/bsfl"
+SYSLOG_ENABLED="yes"
+DONOTLOG="no"
+LOG_FILE="${HACKLETS_BASEDIR}/hacklets.log"
+SYSLOG_TAG="hacklets"
+
+
+function hacklets() {
+    #working:
+    #   array=( "$@" );
+    #   OUT=`cat "${array[@]}"`
+    ########
+    argv=("$@");
+    local HACKLETS_RESULT=`git --git-dir=${HACKLETS_REPODIR} --work-tree=${HACKLETS_PWD} "${argv[@]}" 2>&1`
+    local ERROR="$?"
+
+    ############ begin: building the command, preserve quotes around parameters
+    # the idea: multi-words params need to be quoted
+    local COMMAND="hacklets"
+    local SHORT_COMMAND="hacklets"
+    for word in "${argv[@]}"; do
+        words="${word//[^\ ]} "
+        if [[ ${#words} > 1 ]]; then
+            local SHORT_COMMAND="$SHORT_COMMAND \"${word:0:32}...\""
+            local COMMAND="$COMMAND \"${word}\""
+        else
+            local SHORT_COMMAND="$SHORT_COMMAND ${word:0:32}"
+            local COMMAND="$COMMAND $word"
+        fi
+    done
+    ############ end: building command
+
+    if [[ $ERROR == 0 ]]; then
+        msg_ok "${SHORT_COMMAND:0:$[COLUMNS-15]}"
+    else
+        msg_fail "${SHORT_COMMAND:0:$[COLUMNS-15]}"
+    fi
+    #TODO long along with this, also $HACKLETS_REPODIR and HACKLETS_PWD
+    log "Command: $COMMAND gave: '$HACKLETS_RESULT'"
+    if [[ ! -z $HACKLETS_RESULT ]]; then
+        echo "-------------------------------------------------------------------------------"
+        echo "$HACKLETS_RESULT"
+        echo "-------------------------------------------------------------------------------"
+    fi
+    return "$ERROR"
+}
+##
+# initialize $HACKLETS_REPODIR_NAME (in the CWD) as a hacklets container
+# 
+# @param alternative CWD
+##
+function hacklets_init() {
+    if [[ ! -z $1 ]]; then
+        HACKLETS_PWD="$1"
+    else
+        HACKLETS_PWD=`pwd`
+    fi
+
+    HACKLETS_BASEDIR="${HACKLETS_PWD}/${HACKLETS_BASEDIR_NAME}"
+    HACKLETS_REPODIR="${HACKLETS_PWD}/${HACKLETS_REPODIR_NAME}"
+
+    cmd "mkdir -p ${HACKLETS_REPODIR}"
+    if [[ 0 != $? ]]; then return $?; fi
+    cd ${HACKLETS_REPODIR}
+    if [[ 0 != $? ]]; then
+        msg_fail "cd ${HACKLETS_REPODIR}"
+        return $?;
+    fi
+    msg_ok "cd ${HACKLETS_REPODIR}"
+    #TODO --template="something-usable" --template="${HACKLETS_DIST_DIR}/hacklets-template""
+    cmd "git init --bare"
+    if [[ 0 != $? ]]; then return $?; fi
+    #hacklets config -f config core.bare false
+    #if [[ 0 != $? ]]; then return $?; fi
+    #hacklets config -f config core.worktree '../../'
+    #if [[ 0 != $? ]]; then return $?; fi
+    #mkdir -p info
+    #echo "${HACKLETS_BASEDIR_NAME}" > info/exclude
+    #msg_ok "Adding $HACKLETS_BASEDIR_NAME/ to $HACKLETS_REPODIR_NAME/info/exclude"
+    cd $HACKLETS_PWD
+    msg_ok "cd $HACKLETS_PWD"
+}
+
+##
+# fetch a hacklet, it's like fetching a repo, but a little bit more twisted (so we maintain flexibility for commads like "hacklet checkout")
+##
+function hacklet_fetch() {
+    if [[ ! -n $1 ]]; then
+        msg_fail "first param: URL or name, if name, provide URL as second param"
+        return 1;
+    fi
+    local hname="$1"
+    local hurl="$2"
+    if [[ -z $hurl ]]; then
+        local hurl="${hname}"
+        #TODO normalize hurl and set value to hname
+        msg_debug "hname: $hname"
+        msg_debug "hurl: $hurl"
+        msg_fail "TODO"
+        return 1
+    fi
+    cmd "git clone --recursive --bare "${hurl}" "${HACKLETS_BASEDIR}/${hname}.git""
+    if [[ 0 != $? ]]; then return $?; fi
+    cmd "hacklets remote add hacklet/${hname} ${HACKLETS_BASEDIR}/${hname}.git"
+    if [[ 0 != $? ]]; then return $?; fi
+    cmd "hacklets fetch hacklet/${hname}"
+    if [[ 0 != $? ]]; then return $?; fi
+    cmd "hacklets config --local --add remotes.hacklets hacklet/${hname}"
+    if [[ 0 != $? ]]; then return $?; fi
+    return 0
+}
+
+function hacklets_update() {
+    return 1 # TODO
+}
+
+function hacklets_list() {
+    hacklets config --local --get-all remotes.hacklets
+    return $?
+}
+
+##
+# create a new empty profile
+# 
+# @param the name of the profile
+##
+function hacklets_new_profile() {
+    if [[ ! -n $1 ]]; then
+        msg_fail "you must supply a profile name"
+        return 1;
+    fi
+    local profname="$1"
+    if ! _hacklet_profile_exists "${profname}"; then
+        msg_fail "Profile $profname already exists"
+        return 1
+    fi
+    hacklets checkout --orphan profile/${profname}
+    if [[ 0 != $? ]]; then return $?; fi
+    echo "This is the beginning of profile ${profname}." > "${HACKLETS_PWD}/README.txt"
+    hacklets add "${HACKLETS_PWD}/README.txt"
+    hacklets commit -q -m "This is the beginning of profile ${profname}"
+    hacklets rm -q "${HACKLETS_PWD}/README.txt"
+    hacklets commit -q -m "profile ready to be populated with hacklets"
+}
+
+##
+# adopt an existing (fetched) hacklet into the current profile
+##
+function hacklet_adopt() {
+    eval $(_hacklet_get_active_profile)
+    if [[ ! $RETURN ]]; then
+        msg_fail "Please activate a profile first"
+        unset RETURN
+        return 1
+    fi
+    local profname=$RETURN
+    unset RETURN
+    if [[ ! -n $1 ]]; then
+        msg_fail "adopt <hacklet-name> [hacklet's branch]"
+        return 1
+    fi
+    if [[ ! -n $2 ]]; then
+        local branchname="master"
+    else
+        #TODO check if branch $2 exists
+        local branchname="$2"
+    fi
+    local hname="$1"
+
+    hacklets merge -m "using hacklet/$hname/$branchname in profile $profname" "hacklet/${hname}/${branchname}"
+    grep -q '^Conflicts:' "${HACKLETS_REPODIR}/MERGE_MSG"
+    if [[ 0 == $? ]]; then 
+        #TODO start mergetool
+        hacklets mergetool -y
+        echo "RES: $?" # TODO XXX
+        if [[ 0 == $? ]]; then
+            hacklets commit -a # TODO: same < > redir trick for editor
+        fi
+        return $?;
+    fi
+    return 0
+}
+
+###############################################################################
+# internal function, do not rely on these
+###############################################################################
+function _hacklet_profile_exists() {
+    if [[ 0 != `hacklets branch --no-color --list "profile/$1"` ]]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+
+function _hacklet_get_active_profile() {
+    local RETURN=`hacklets branch -a --no-color --list "profile/*" | grep '^* ' | sed 's/* profile\///'`
+    if [[ -z $RETURN ]];
+        then return 1
+    fi
+    echo "RETURN="${RETURN}""
+    return 0
+}
+
+##
+# create some testing bare repos in /tmp/poc/*.git/
+##
+function hacklets_demo_repos() {
+    pushd /tmp
+    rm -rf poc
+    mkdir poc
+    cd poc/
+    mkdir firstrepo.git
+    cd firstrepo.git/
+    git --bare init
+    cd ..
+    mkdir secondrepo.git
+    cd secondrepo.git/
+    git --bare init
+    cd ..
+    mkdir checkouts
+    cd checkouts/
+
+    git clone --recursive ../firstrepo.git
+    git clone --recursive ../secondrepo.git
+
+    cd firstrepo/ 
+    echo 'testing first repo' > README.txt
+    git add README.txt
+    git ci -m "initial commit of 1st repo"
+    git push origin master
+    cd ..
+
+    cd secondrepo/ 
+    echo 'testing second repo' > README.txt
+    git add README.txt
+    git ci -m "initial commit of 2nd repo"
+    git push origin master
+    cd ..
+    popd
+}

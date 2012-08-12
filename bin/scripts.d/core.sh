@@ -1,6 +1,26 @@
 GIT_HACKLET_BASEDIR_NAME=.hacklets
+GIT_HACKLET_MASTER_NAME=_master
 
-source ${0%/*}/scripts.d/bsfl
+#source ${0%/*}/scripts.d/bsfl
+
+# initializes the current directory as a hacklets directory
+function hacklet_init() {
+    if [ ! -n "$1" ]; then
+        return 1;
+    fi
+    local master="$1"
+    local PWD=`pwd`
+    #TODO ask for confirmation, give the chance to skip
+    rm -rf ./* ./.*
+    mkdir -p "$GIT_HACKLET_BASEDIR_NAME/$master"
+    pushd "$GIT_HACKLET_BASEDIR_NAME/$master"
+    git init --template=""
+    touch .gitignore
+    git add .gitignore
+    git commit -m "initial commit for hacklets [$PWD]"
+    popd
+    echo "$master" > "$GIT_HACKLET_BASEDIR_NAME/$GIT_HACKLET_MASTER_NAME"
+}
 
 # hacklet_fetch($name, $repository)
 # fetch repo at URL $repository into local directory $name
@@ -20,6 +40,13 @@ function hacklet_fetch() {
     mkdir -p "$GIT_HACKLET_BASEDIR_NAME/${name}/info"
     echo "$GIT_HACKLET_BASEDIR_NAME/" >> $GIT_HACKLET_BASEDIR_NAME/${name}/info/exclude
     return 0;
+}
+
+function hacklet_install2() {
+    if [ ! -n "$1" ]; then
+        return 1;
+    fi
+    local url="$1"
 }
 
 # hacklet_install($name)
