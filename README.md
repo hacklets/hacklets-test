@@ -1,4 +1,12 @@
-# What are hacklets?
+# Table of Contents
+
+* [What are Hacklets?](#what-are-hacklets)
+* [Terminology and Concepts](#terminology-and-concepts)
+    * [Concepts FAQ](#concepts-faq)
+* [Installation](#installation)
+* [Developers' Tutorial](#developers-tutorial)
+
+# What are Hacklets?
 
 Have you ever wished it would be easier to just take someone's configuration
 for your favourite application and use it without hassle? Or to make it easier
@@ -55,7 +63,7 @@ hacklets, you get all the above, plus:
   users get the code and they can start hacking on it right away
 * **TODO**: more advantages
 
-# Terminology and concepts
+# Terminology and Concepts
 
 In order to make it easier to communicate, we have to introduce some keywords
 and concepts. Please keep in mind that hacklets relies heavily on other tools,
@@ -112,10 +120,18 @@ You can rename pretty much any directory (TODO: implement this), except the
 
 # Installation
 
+TODO
+
 # Tutorial
 
-# Developers' tutorial
+TODO
 
-# List of hacklets
+# Developers' Tutorial
+
+TODO
+
+# List of Hacklets
+
+TODO or "automatic" `world` and `universe` commands?
 
 **Happy hackleting!**
