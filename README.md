@@ -42,6 +42,8 @@ hacklets, you get all the above, plus:
 * easy integration with github, or any other git repository hosting, or why
   not, your own server, your own bug tracker, your own tools - **once you get
   hacklets, you own it!**
+* hacklets is a great platform for **backing up** pretty much everything, even
+  your passwords on another machine
 * if you develop a new tool, widget, script, configuration, or whatever digital
   information you may think of, for yourself, then you can just put it into
   a hacklet and share it. Others who have the same needs may use it, and
