@@ -83,9 +83,9 @@ the files of the project, and inside it a **git directory** called `.git`.
 However, these directories can be situated anywhere, and this fact is used by
 hacklets to make it possible to manage the hacklets.
 
-* when you installing hacklets, we say that you've **adopted** the hacklets
+* when you install hacklets, we say that you've **adopted** the hacklets
   hacklet in the `$HOME` **container**, that is, in case of the installation,
-  this is your home directory, also known as `~`
+  this is your home directory, also known as `~` or `$HOME`
 * a **container** is a directory managed by hacklets, with a directory called
   `.hacklets/` inside it. This is called the **backend directory**. At any
   given time, there is exactly one *backend directory* per *container*
@@ -93,7 +93,7 @@ hacklets to make it possible to manage the hacklets.
   hacklets, hacklets (this is the hacklet called "hacklets", and the *hacklets
   project*) sets itself as the *master hacklet* of your **home container** (that,
   is, the container that resides in `$HOME`)
-* the master hacklet is stored in the *backends subdirectory* `master/`. So in
+* the master hacklet is stored in the *backends' subdirectory* `master/`. So in
   case of adopting the hacklets hacklet (in other words, installing it for the
   first time), the *git directory* of hacklets is typically stored in
   `$HOME/.hacklets/master/`
@@ -104,7 +104,7 @@ hacklets to make it possible to manage the hacklets.
   want, a *projects container* for instance
 * when you want to install a hacklet, there is a two step process involved.
   First, you **fetch** that hacklet. Fetching a hacklet means downloading the
-  git data, that is, the project's *git directory* into `$HBD/project.git/`.
+  git data, that is, the hacklet's *git directory* into `<backend>/project.git/`.
   Attention: this is not simply fetching in git terms, it's also some wiring
   done for hacklets' own needs (you'll see it in the tutorial)
 * after *fetching* a hacklet, you're ready to *adopt* it in a **profile**
@@ -116,7 +116,9 @@ hacklets to make it possible to manage the hacklets.
 
 ### Cand I rename this or that?
 You can rename pretty much any directory (TODO: implement this), except the
-`profile/` prefix for profiles.
+`profile/` prefix for profiles. Please note that strange things may happen if
+you rename critical parts, like the default name of the **backend directory**,
+strange things which may, or may not be what you wanted :-)
 
 # Installation
 
