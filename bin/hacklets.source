@@ -83,16 +83,8 @@ function hacklets_init() {
         return $?;
     fi
     msg_ok "cd ${HACKLETS_REPODIR}"
-    #TODO --template="something-usable" --template="${HACKLETS_DIST_DIR}/hacklets-template""
-    cmd "git init --bare"
+    cmd "git init --bare --template="${HACKLETS_DIST_DIR}/hacklets-template""
     if [[ 0 != $? ]]; then return $?; fi
-    #hacklets config -f config core.bare false
-    #if [[ 0 != $? ]]; then return $?; fi
-    #hacklets config -f config core.worktree '../../'
-    #if [[ 0 != $? ]]; then return $?; fi
-    #mkdir -p info
-    #echo "${HACKLETS_BASEDIR_NAME}" > info/exclude
-    #msg_ok "Adding $HACKLETS_BASEDIR_NAME/ to $HACKLETS_REPODIR_NAME/info/exclude"
     cd $HACKLETS_PWD
     msg_ok "cd $HACKLETS_PWD"
 }
