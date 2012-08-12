@@ -48,9 +48,9 @@ hacklets, you get all the above, plus:
   improve it, and there you are, a more dynamic and collaborative environment
   from which everybody wins
 * no configuration or installation process stays in the way of your users
-  adopting your tool - hacklets is easily integrable with your already existing
-  git project, and the best of all, your users get the code and they can start
-  hacking on it right away
+  adopting your tool and making the best out of it - hacklets is easily
+  integrable with your already existing git project, and the best of all, your
+  users get the code and they can start hacking on it right away
 * **TODO**: more advantages
 
 # Terminology
