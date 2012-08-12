@@ -7,7 +7,7 @@ for your friends and collegues to use your configuration?
 What about taking multiple configurations for the same application and merging
 and adapting it to your own taste, then publish it as your own?
 
-Enter *the web of **hacklets** *.
+Enter **the web of hacklets**.
 
 Hacklets is first of all a way of organizing things, it's a methodology. With
 hacklets, you get all the above, plus:
@@ -29,22 +29,28 @@ hacklets, you get all the above, plus:
 * do you have a new collegue at your **workplace**, and want to give him all
   the projects and configurations in one shot? Throw everything
   (configurations, projects along with their code, wizards) in some hacklets
-  and a profile, and you get it running in a few minutes
+  and a profile, and you get it running in a few minutes. For every collegue,
+  forever!
 * do you have multiple machines (at home or work) which you want to easily
   synchronize, or you've bought a new computer and you want the same or at
   least some of your other configurations and projects on the new machine? With
   hacklets, you can easily do that
 * with hacklets, you are deprived of all those repetitive tasks you do all day,
   and win time to do the real stuff that matters. Hacklets makes you **happy**
-  through productivity, and makes it extremely easy for you to share that
+  through productivity, and makes it extremely easy for you to **share** that
   happyness with your friends
-* easy integration with github, or any other git repository hosting (or why
-  not, your own server, your own bug tracker, your own tools)
+* easy integration with github, or any other git repository hosting, or why
+  not, your own server, your own bug tracker, your own tools - **once you get
+  hacklets, you own it!**
 * if you develop a new tool, widget, script, configuration, or whatever digital
   information you may think of, for yourself, then you can just put it into
   a hacklet and share it. Others who have the same needs may use it, and
   improve it, and there you are, a more dynamic and collaborative environment
   from which everybody wins
+* no configuration or installation process stays in the way of your users
+  adopting your tool - hacklets is easily integrable with your already existing
+  git project, and the best of all, your users get the code and they can start
+  hacking on it right away
 * **TODO**: more advantages
 
 # Terminology
