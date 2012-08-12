@@ -47,7 +47,7 @@ hacklets, you get all the above, plus:
 * if you develop a new tool, widget, script, configuration, or whatever digital
   information you may think of, for yourself, then you can just put it into
   a hacklet and share it. Others who have the same needs may use it, and
-  improve it, and there you are, a more dynamic and collaborative environment
+  improve it, and there we are, in a more dynamic and collaborative environment
   from which everybody wins
 * no configuration or installation process stays in the way of your users
   adopting your tool and making the best out of it - hacklets is easily
@@ -98,10 +98,11 @@ hacklets to make it possible to manage the hacklets.
   First, you **fetch** that hacklet. Fetching a hacklet means downloading the
   git data, that is, the project's *git directory* into `$HBD/project.git/`.
   Attention: this is not simply fetching in git terms, it's also some wiring
-  done for hacklets own needs (you'll see it in the tutorial)
+  done for hacklets' own needs (you'll see it in the tutorial)
 * after *fetching* a hacklet, you're ready to *adopt* it in a **profile**
 * a **profile** is a branch prefixed with `profile/` in which you *merge* (in git
-  terms) or **adopt** hacklets
+  terms) or **adopt** hacklets. You can combine hacklets in any way you wish in
+  as many profiles as you need
 
 ## Concepts FAQ
 
@@ -112,6 +113,8 @@ You can rename pretty much any directory (TODO: implement this), except the
 # Installation
 
 # Tutorial
+
+# Developers' tutorial
 
 # List of hacklets
 
