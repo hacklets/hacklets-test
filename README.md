@@ -55,13 +55,64 @@ hacklets, you get all the above, plus:
   users get the code and they can start hacking on it right away
 * **TODO**: more advantages
 
-# Terminology
+# Terminology and concepts
 
+In order to make it easier to communicate, we have to introduce some keywords
+and concepts. Please keep in mind that hacklets relies heavily on other tools,
+so you may well use those concepts. Yet we still need some keywords for them
+which better fit into the hacklets universe.
 
-### Step 5: Installing further hacklets
+In the next section, we're going to use this terminology written in *italic* in
+an installation guide and tutorial at the same time. Please refer back if
+something is unclear.
 
+Hacklets uses git, shell scripting (TODO: developed on bash, what about
+others?), and python (TODO: not yet there, but we reserve python as
+a dependency). You should have some basic knowledge of git before proceeding.
+
+In git, the usual setup is to have a **working tree** in a directory with all
+the files of the project, and inside it a **git directory** called `.git`.
+However, these directories can be situated anywhere, and this fact is used by
+hacklets to make it possible to manage the hacklets.
+
+* when you installing hacklets, we say that you've **adopted** the hacklets
+  hacklet in the `$HOME` **container**, that is, in case of the installation,
+  this is your home directory, also known as `~`
+* a **container** is a directory managed by hacklets, with a directory called
+  `.hacklets/` inside it. This is called the **backend directory**. At any
+  given time, there is exactly one *backend directory* per *container*
+* every *backend directory* has a **master hacklet**. Upon installation of
+  hacklets, hacklets (this is the hacklet called "hacklets", and the *hacklets
+  project*) sets itself as the *master hacklet* of your **home container** (that,
+  is, the container that resides in `$HOME`)
+* the master hacklet is stored in the *backends subdirectory* `master/`. So in
+  case of adopting the hacklets hacklet (in other words, installing it for the
+  first time), the *git directory* of hacklets is typically stored in
+  `$HOME/.hacklets/master/`
+* the *backend directory* of a container only contains *git directories* of the
+  hacklets being used (or ready to be used), and some other meta data needed by
+  hacklets itself
+* you can have as many containers as you want, for as many directories as you
+  want, a *projects container* for instance
+* when you want to install a hacklet, there is a two step process involved.
+  First, you **fetch** that hacklet. Fetching a hacklet means downloading the
+  git data, that is, the project's *git directory* into `$HBD/project.git/`.
+  Attention: this is not simply fetching in git terms, it's also some wiring
+  done for hacklets own needs (you'll see it in the tutorial)
+* after *fetching* a hacklet, you're ready to *adopt* it in a **profile**
+* a **profile** is a branch prefixed with `profile/` in which you *merge* (in git
+  terms) or **adopt** hacklets
+
+## Concepts FAQ
+
+### Cand I rename this or that?
+You can rename pretty much any directory (TODO: implement this), except the
+`profile/` prefix for profiles.
+
+# Installation
+
+# Tutorial
 
 # List of hacklets
-
 
 **Happy hackleting!**
