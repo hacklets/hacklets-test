@@ -263,8 +263,8 @@ msg () {
         if ! option_enabled "DONOTLOG"
         then
             log "$MESSAGE"
-        else
-            echo "DONOTLOG is $DONOTLOG"
+        #else
+            #echo "DONOTLOG is $DONOTLOG"
         fi
     else
         echo "-- no message received --"
@@ -644,28 +644,38 @@ bail () {
 # The function then displays if the command succeeded or not.
 #
 cmd () {
-
     COMMAND="$1"
-    msg "Executing: $COMMAND"
-
     RESULT=`$COMMAND 2>&1`
     ERROR="$?"
 
-    MSG="Command: ${COMMAND:0:29}..."
-    
-    tput cuu1
-
-    if [ "$ERROR" == "0" ]
-    then
-        msg_ok "$MSG"
-        if [ "$DEBUG" == "1" ]
-        then
-            msg "$RESULT"
-        fi
+    if [[ $ERROR == 0 ]]; then
+        msg_ok "${COMMAND:0:$[COLUMNS-15]}"
     else
-        msg_fail "$MSG"
-        log "$RESULT"
+        msg_fail "${COMMAND:0:$[COLUMNS-15]}"
     fi
+    log "Command: $COMMAND gave: '$RESULT'"
+
+#    COMMAND="$1"
+    #msg "Executing: ${COMMAND:0:29}"
+
+    #RESULT=`$COMMAND 2>&1`
+    #ERROR="$?"
+
+    #MSG="Command: ${COMMAND}"
+    
+    #tput cuu1
+
+    #if [ "$ERROR" == "0" ]
+    #then
+        #msg_ok "$MSG"
+        #if [ "$DEBUG" == "1" ]
+        #then
+            #msg "$RESULT"
+        #fi
+    #else
+        #msg_fail "$MSG"
+        #log "$RESULT"
+    #fi
 
     return "$ERROR"
 }
