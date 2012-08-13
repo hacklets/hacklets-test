@@ -178,19 +178,30 @@ function hacklet_adopt() {
     fi
     local hname="$1"
 
-    hacklets merge -m "using hacklet/$hname/$branchname in profile $profname" "hacklet/${hname}/${branchname}"
+    hacklets tag -a -m "before installing $hname" "before-install-$hname"
+    local mergemsg="using hacklet/$hname/$branchname in profile $profname"
+    hacklets merge -m "$mergemsg" "hacklet/${hname}/${branchname}"
+    local isconflict=0
+    local conflictsolved=0
     if [[ -f "${HACKLETS_REPODIR}/MERGE_MSG" ]]; then
         grep -q '^Conflicts:' "${HACKLETS_REPODIR}/MERGE_MSG"
+        isconflict=1
         if [[ 0 == $? ]]; then 
             hacklets mergetool -y
             if [[ 0 == $? ]]; then
                 hacklets commit -a
+                conflictsolved=1
             fi
         fi
     fi
+    if [[ $isconflict && $conflictsolved ]]; then
+        echo "FOO BAR"
+    fi
     hacklets tag -a -m "installed $hname" install-$hname
+    if [[ 0 != $? ]]; then return $?; fi
     local HEAD=`${HACKLETS_CMD} rev-parse HEAD`
     hacklets config --local --add profiles.$profname.$hname.$branchname $HEAD
+    if [[ 0 != $? ]]; then return $?; fi
     return 0
 }
 
