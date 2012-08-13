@@ -78,9 +78,21 @@ alias hacklets.source='source ~/projects/homedir/hacklets/bin/hacklets.source'
 
 cd .. && rm -rf flav && mkdir flav && cd flav && hacklets.source && hacklets-init
 
-hacklet_fetch abc /tmp/poc/firstrepo.git
-hacklet_fetch def /tmp/poc/secondrepo.git
-hacklets_new_profile myfirstprofile
+hacklet_fetch abc /tmp/hacklets-mocs/firstrepo.git
+hacklet_fetch def /tmp/hacklets-mocs/secondrepo.git
+hacklet_fetch xyz /tmp/hacklets-mocs/thirdrepo.git
+hacklet_fetch foo /tmp/hacklets-mocs/unrelatedrepo.git
+hacklets_new_profile profile
 
 hacklet_adopt abc
 hacklet_adopt def
+hacklet_adopt xyz
+hacklet_adopt foo
+
+
+# uninstalling a hacklet:
+# ------------------------
+# show the commit where we should reset to
+#   h describe --tags $(h rev-list -1 install-abc^)
+# where install-abc is the tag name
+#

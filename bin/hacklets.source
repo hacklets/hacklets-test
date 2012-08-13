@@ -241,39 +241,31 @@ function _hacklet_get_active_profile() {
 }
 
 ##
-# create some testing bare repos in /tmp/poc/*.git/
+# create some testing bare repos in /tmp/hacklets-mocs/*.git/
 ##
-function hacklets_demo_repos() {
-    pushd /tmp
-    rm -rf poc
-    mkdir poc
-    cd poc/
-    mkdir firstrepo.git
-    cd firstrepo.git/
+
+function _hacklets_mock_repo() {
+    local name="$1"
+    local file="$2"
+
+    cmd "mkdir -p /tmp/hacklets-mocs/checkouts/"
+    pushd /tmp/hacklets-mocs/
+    mkdir "${name}repo.git"
+    cd "${name}repo.git"
     git --bare init
-    cd ..
-    mkdir secondrepo.git
-    cd secondrepo.git/
-    git --bare init
-    cd ..
-    mkdir checkouts
-    cd checkouts/
-
-    git clone --recursive ../firstrepo.git
-    git clone --recursive ../secondrepo.git
-
-    cd firstrepo/ 
-    echo 'testing first repo' > README.txt
-    git add README.txt
-    git ci -m "initial commit of 1st repo"
+    cd ../checkouts/
+    git clone --recursive "../${name}repo.git"
+    cd "${name}repo"
+    echo "testing $name repo" > $file
+    git add $file
+    git commit -m "initial commit of $name repo"
     git push origin master
-    cd ..
-
-    cd secondrepo/ 
-    echo 'testing second repo' > README.txt
-    git add README.txt
-    git ci -m "initial commit of 2nd repo"
-    git push origin master
-    cd ..
     popd
+}
+function hacklets_demo_repos() {
+    rm -rf /tmp/hacklets-mocs/
+    _hacklets_mock_repo first README.txt
+    _hacklets_mock_repo second README.txt
+    _hacklets_mock_repo third README.txt
+    _hacklets_mock_repo unrelated INSTALL.txt
 }
