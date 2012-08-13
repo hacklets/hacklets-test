@@ -10,7 +10,7 @@ HACKLETS_REPODIR="${HACKLETS_PWD}/${HACKLETS_REPODIR_NAME}"
 alias hacklets-init='hacklets_init'
 alias hacklets-demo_repos='hacklets_demo_repos'
 alias hacklets-new_profile='hacklets_new_profile'
-alias h='hacklets'
+alias h="$HACKLETS_CMD"
 
 LOG_ENABLED="yes"
 DONOTLOG="no"
@@ -74,6 +74,7 @@ function hacklets_init() {
 
     HACKLETS_BASEDIR="${HACKLETS_PWD}/${HACKLETS_BASEDIR_NAME}"
     HACKLETS_REPODIR="${HACKLETS_PWD}/${HACKLETS_REPODIR_NAME}"
+    HACKLETS_CMD="git --git-dir=${HACKLETS_REPODIR} --work-tree=${HACKLETS_PWD}"
 
     cmd "mkdir -p ${HACKLETS_REPODIR}"
     if [[ 0 != $? ]]; then return $?; fi
@@ -109,11 +110,11 @@ function hacklet_fetch() {
     fi
     cmd "git clone --recursive --bare "${hurl}" "${HACKLETS_BASEDIR}/${hname}.git""
     if [[ 0 != $? ]]; then return $?; fi
-    cmd "hacklets remote add hacklet/${hname} ${HACKLETS_BASEDIR}/${hname}.git"
+    hacklets remote add hacklet/${hname} ${HACKLETS_BASEDIR}/${hname}.git
     if [[ 0 != $? ]]; then return $?; fi
-    cmd "hacklets fetch hacklet/${hname}"
+    hacklets fetch hacklet/${hname}
     if [[ 0 != $? ]]; then return $?; fi
-    cmd "hacklets config --local --add remotes.hacklets hacklet/${hname}"
+    hacklets config --local --add remotes.hacklets hacklet/${hname}
     if [[ 0 != $? ]]; then return $?; fi
     return 0
 }
@@ -149,6 +150,7 @@ function hacklets_new_profile() {
     hacklets commit -q -m "This is the beginning of profile ${profname}"
     hacklets rm -q "${HACKLETS_PWD}/README.txt"
     hacklets commit -q -m "profile ready to be populated with hacklets"
+    hacklets tag -a -m "profile $profname" start-$profname
 }
 
 ##
@@ -176,17 +178,44 @@ function hacklet_adopt() {
     local hname="$1"
 
     hacklets merge -m "using hacklet/$hname/$branchname in profile $profname" "hacklet/${hname}/${branchname}"
-    grep -q '^Conflicts:' "${HACKLETS_REPODIR}/MERGE_MSG"
-    if [[ 0 == $? ]]; then 
-        #TODO start mergetool
-        hacklets mergetool -y
-        echo "RES: $?" # TODO XXX
-        if [[ 0 == $? ]]; then
-            hacklets commit -a # TODO: same < > redir trick for editor
+    if [[ -f "${HACKLETS_REPODIR}/MERGE_MSG" ]]; then
+        grep -q '^Conflicts:' "${HACKLETS_REPODIR}/MERGE_MSG"
+        if [[ 0 == $? ]]; then 
+            hacklets mergetool -y
+            if [[ 0 == $? ]]; then
+                hacklets commit -a
+            fi
         fi
+    fi
+    hacklets tag -a -m "installed $hname" install-$hname
+    local HEAD=`${HACKLETS_CMD} rev-parse HEAD`
+    hacklets config --local --add profiles.$profname.$hname.$branchname $HEAD
+    return 0
+}
+
+function hacklet_disown() {
+    if [[ ! -n $1 ]]; then
+        msg_fail "Please provide a hacklet name"
+        return 1
+    fi
+    local hname="$1"
+    eval $(_hacklet_get_active_profile)
+    local profname=$RETURN
+    if [[ ! $RETURN ]]; then
+        msg_fail "Please activate a profile first"
+        unset RETURN
+        return 1
+    fi
+    unset RETURN
+    local COMMIT=`$HACKLETS_CMD config --local --get-regexp profiles.$profname.$hname.*`
+    if [[ 0 != $? ]]; then
+        msg_fail "hacklets config --local --get-regexp profiles.$profname.$hname.*"
         return $?;
     fi
-    return 0
+    msg_ok "hacklets config --local --get-regexp profiles.$profname.$hname.*"
+    #TODO check if 1 == `echo "$COMMIT" | wc -l`, if not, then error
+    local COMMIT=`echo "$COMMIT" | cut -d ' ' -f 2`
+    hacklets revert -m 1 $COMMIT
 }
 
 ###############################################################################

@@ -117,7 +117,7 @@ hacklets to make it possible to manage the hacklets.
 ### Cand I rename this or that?
 You can rename pretty much any directory (TODO: implement this), except the
 `profile/` prefix for profiles. Please note that strange things may happen if
-you rename critical parts, like the default name of the **backend directory**,
+you rename critical parts, like the default name of the *backend directory*,
 strange things which may, or may not be what you wanted :-)
 
 # Installation
