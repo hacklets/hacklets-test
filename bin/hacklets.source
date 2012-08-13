@@ -112,6 +112,7 @@ function hacklet_fetch() {
     if [[ 0 != $? ]]; then return $?; fi
     hacklets remote add hacklet/${hname} ${HACKLETS_BASEDIR}/${hname}.git
     if [[ 0 != $? ]]; then return $?; fi
+    # TODO the following gives "warning: no common commits", see how you can fix it
     hacklets fetch hacklet/${hname}
     if [[ 0 != $? ]]; then return $?; fi
     hacklets config --local --add remotes.hacklets hacklet/${hname}
