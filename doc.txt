@@ -1,78 +1,3 @@
-################# setting up the layout
-
-    mkdir poc
-    cd poc/
-    git ^C
-    mkdir firstrepo.git
-    cd firstrepo.git/
-    git --bare init
-    cd ..
-    mkdir secondrepo.git
-    cd secondrepo.git/
-    git --bare init
-    cd ..
-    mkdir checkouts
-    cd checkouts/
-
-git clone --recursive ../firstrepo.git
-git clone --recursive ../secondrepo.git
-
-cd firstrepo/ 
-echo 'testing first repo' > README.txt
-git add README.txt
-git ci -m "initial commit of 1st repo"
-git push origin master
-cd ..
-
-cd secondrepo/ 
-echo 'testing second repo' > README.txt
-git add README.txt
-git ci -m "initial commit of 2nd repo"
-git push origin master
-cd ..
-
-################# setting up master project
-
-mkdir unified && cd unified && git init
-
-#### fetching a hacklet
-git remote add hacklet/first ../../firstrepo.git
-git fetch hacklet/first
-#### fetching a hacklet
-git remote add hacklet/second ../../secondrepo.git
-git fetch hacklet/second
-
-################# create a profile
-
-git co --orphan profile/testprofile
-#TODO: should work without other files (like README.txt here)
-
-echo 'This is the beginning of profile test' > README.txt
-git add README.txt
-git commit -m "This is the beginning of profile test"
-git rm README.txt
-git commit -m "empty profile state"
-
-################# adopting another hacklet into the current profile
-
-git merge -m "using hacklet/first/master in profile test" hacklet/first/master
-    #if $?
-    #TODO detect if merge was successful
-    git mergetool -y
-    #TODO commit without asking for message
-    git commit
-
-################# adopting another hacklet into the current profile
-
-git merge -m "using hacklet/second/master in profile test" hacklet/second/master
-    #if $?
-    #TODO detect if merge was successful
-    git mergetool -y
-    #TODO commit without asking for message
-    git commit
-
-
-
 ##### HACKLETS
 alias hacklets.activate='source ~/projects/homedir/hacklets/bin/hacklets.sh' && hacklets.activate && hacklets_demo_repos
 
@@ -88,7 +13,6 @@ hacklets_adopt abc &&
 hacklets_adopt def &&
 hacklets_adopt xyz &&
 hacklets_adopt foo
-
 
 # uninstalling a hacklet:
 # ------------------------
