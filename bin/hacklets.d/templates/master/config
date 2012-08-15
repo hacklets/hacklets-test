@@ -13,9 +13,6 @@
     br = branch
     sm = submodule
     cp = cherry-pick
-[github]
-    user = flavius
-    token = 7c8bdf0e6ad5f6fbd9fd29e28080dcc1
 [mergetool]
     keepBackup = false
 [merge]
