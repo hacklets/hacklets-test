@@ -1,5 +1,7 @@
 #!/bin/bash
 
+#TODO: remove me
+
 source ${0%/*}/scripts.d/core.sh
 
 if [ ! -n "$1" ]; then

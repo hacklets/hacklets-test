@@ -1,5 +1,7 @@
 #!/bin/bash
 
+#TODO: remove me
+
 if [ ! -n "$1" ]; then
     echo "Must pass name.";
     exit 1;
