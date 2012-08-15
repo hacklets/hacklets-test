@@ -145,6 +145,8 @@ machines with a little bit of automatization:
 
     bash <(curl https://raw.github.com/hacklets/hacklets-test/deploy/install.sh -L -o -)
 
+After following the wizard, log out and log back in again.
+
 You do not need to do this more than once per user, per machine. Installing
 hacklets in the **home container** is done only once.
 
