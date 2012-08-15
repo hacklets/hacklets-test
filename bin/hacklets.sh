@@ -304,6 +304,8 @@ function _hacklets_get_active_profile() {
 
 ##
 # create some testing bare repos in /tmp/hacklets-mocs/*.git/
+# 
+# TODO: move this somewhere else (part of the working copy, not of the distribution in bin/)
 ##
 
 function _hacklets_mock_repo() {
