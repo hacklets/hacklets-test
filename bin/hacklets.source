@@ -2,6 +2,7 @@ HACKLETS_BASEDIR_NAME=.hacklets
 HACKLETS_REPODIR_NAME="${HACKLETS_BASEDIR_NAME}/master"
 HACKLETS_DIST_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 HACKLETS_EXEC_NAME="${0%/*}"
+HACKLETS_MASTER_TPL_DIR="${HACKLETS_DIST_DIR}/hacklets.d/templates/master"
 
 HACKLETS_PWD=`pwd`
 HACKLETS_BASEDIR="${HACKLETS_PWD}/${HACKLETS_BASEDIR_NAME}"
@@ -84,7 +85,7 @@ function hacklets_init() {
         return $?;
     fi
     msg_ok "cd ${HACKLETS_REPODIR}"
-    cmd "git init --bare --template="${HACKLETS_DIST_DIR}/hacklets-template""
+    cmd "git init --bare --template=${HACKLETS_MASTER_TPL_DIR}"
     if [[ 0 != $? ]]; then return $?; fi
     cd $HACKLETS_PWD
     msg_ok "cd $HACKLETS_PWD"
