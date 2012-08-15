@@ -143,7 +143,7 @@ To remove the test user, log out from that account, and as root:
 Now that you have installed it by hand once, you can install it on other
 machines with a little bit of automatization:
 
-    curl https://raw.github.com/hacklets/hacklets-test/deploy/install.sh -L -o - | bash
+    bash <(curl https://raw.github.com/hacklets/hacklets-test/deploy/install.sh -L -o -)
 
 You do not need to do this more than once per user, per machine. Installing
 hacklets in the **home container** is done only once.
