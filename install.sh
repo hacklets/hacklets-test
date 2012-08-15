@@ -9,7 +9,7 @@ git --git-dir=.hacklets/master checkout
 
 echo "Your real name will be used as a display name in your commits, on github,
 and in any similar situations."
-local SUGGEST=`getent passwd foo | cut -d ':' -f 5`
+SUGGEST=`getent passwd foo | cut -d ':' -f 5`
 read -e -p "Your real name: " -i "${SUGGEST}" REAL_NAME
 echo "Your e-mail should be the same as the one used to register on github,
 for easier github integration."
