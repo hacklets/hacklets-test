@@ -150,6 +150,9 @@ After following the wizard, log out and log back in again.
 You do not need to do this more than once per user, per machine. Installing
 hacklets in the **home container** is done only once.
 
+For other containers (other directories, not the home one), hacklets will
+initialize an empty **master hacklet**.
+
 # Tutorial
 
 In this tutorial, we will try to get a minimal working environment built on top
