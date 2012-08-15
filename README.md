@@ -128,11 +128,6 @@ you: TODO link to wiki page here.
 
 TODO: step by step guide
 
-Now that you have installed it by hand once, you can install it on other
-machines with a little bit of automatization:
-
-    curl https://raw.github.com/hacklets/hacklets-test/deploy/install.sh -L -o - | bash
-
 To create test users, run as root:
 
     USER=foo && PASS=bar && useradd -p $(perl -e"print crypt('$PASS', '$USER')") $USER && mkdir /home/$USER && chown -R $USER:users /home/$USER
@@ -145,6 +140,14 @@ To remove the test user, log out from that account, and as root:
 
     userdel foo && rm -rf /home/foo
 
+Now that you have installed it by hand once, you can install it on other
+machines with a little bit of automatization:
+
+    curl https://raw.github.com/hacklets/hacklets-test/deploy/install.sh -L -o - | bash
+
+You do not need to do this more than once per user, per machine. Installing
+hacklets in the **home container** is done only once.
+
 # Tutorial
 
 In this tutorial, we will try to get a minimal working environment built on top
@@ -155,7 +158,27 @@ Please note that *hacklets* is a work in progress and it's not stable, so look
 carefully at the commands executed and try to learn from them. Read the
 manpages if necessary.
 
-TODO
+Hacklets display all the commands it issues, so you always see what's doing
+and, in case of a failure, you get an idea of where to go hacking and correct
+the bug.
+
+Download a hacklet and make it available for use in the current container:
+
+    hacklets_fetch sane-defaults git://github.com/hacklets/sane-defaults.git
+
+`sane-defaults` is the name of the hacklet, you can give it any name, but it's
+a good practice to keep it the same as the remote one.  The second parameter is
+the URL of the hacklet. This can be any bare repository.
+
+Hacklets can only be used together when bundled in profiles. So let's create a new profile:
+
+    hacklets_new_profile test
+
+And now let's use the hacklet `sane-defaults`:
+
+    hacklets_adopt sane-defaults
+
+TODO: more docs, clearer, funnier, awesomer
 
 # Developers' Tutorial
 
