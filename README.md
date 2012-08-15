@@ -128,7 +128,7 @@ you: TODO link to wiki page here.
 
 To create test users, run as root:
 
-    USER=foo && PASS=bar && useradd -p $(perl -e"print crypt('$PASS', '$USER')") $USER && mkdir /home/$USER && chown -R $USER:users /home/$USER
+    USER=foo && PASS=bar && useradd -p $(perl -e"print crypt('$PASS', '$USER')") -c "Hello Hacklets" $USER && mkdir /home/$USER && chown -R $USER:users /home/$USER
 
 To log in:
 
