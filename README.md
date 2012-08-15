@@ -147,6 +147,16 @@ machines with a little bit of automatization:
 
 After following the wizard, log out and log back in again.
 
+Before using a container, you must initialize it:
+
+    hacklets_activate_this
+
+This will keep the container initialized in the current shell. If you open
+a new shell and `cd` to that directory, you have to initialize the container
+again.
+
+TODO: alias `cd` to do `hacklets_activate_this` transparently
+
 You do not need to do this more than once per user, per machine. Installing
 hacklets in the **home container** is done only once.
 

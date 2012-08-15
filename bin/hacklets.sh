@@ -12,13 +12,16 @@ alias hacklets-demo_repos='hacklets_demo_repos'
 alias hacklets-new_profile='hacklets_new_profile'
 #alias hacklets="$HACKLETS_CMD"
 
+#globals
+HACKLETS_CONTAINER_DIR=`pwd`
+
 ##
 # activate the current directory as a container
 ##
 function hacklets_activate_this() {
-    HACKLETS_CONTAINER_DIR=`pwd`
     HACKLETS_BACKENDDIR="${HACKLETS_CONTAINER_DIR}/${HACKLETS_BACKENDDIR_NAME}"
     HACKLETS_MASTERDIR="${HACKLETS_CONTAINER_DIR}/${HACKLETS_MASTERDIR_NAME}"
+    HACKLETS_CMD="git --git-dir=${HACKLETS_MASTERDIR} --work-tree=${HACKLETS_CONTAINER_DIR}"
 
     ## internal variables
     LOG_ENABLED="yes"
@@ -110,13 +113,9 @@ function hacklets_cmd() {
 function hacklets_init() {
     if [[ ! -z $1 ]]; then
         HACKLETS_CONTAINER_DIR="$1"
-    else
-        HACKLETS_CONTAINER_DIR=`pwd`
     fi
 
-    HACKLETS_BACKENDDIR="${HACKLETS_CONTAINER_DIR}/${HACKLETS_BACKENDDIR_NAME}"
-    HACKLETS_MASTERDIR="${HACKLETS_CONTAINER_DIR}/${HACKLETS_MASTERDIR_NAME}"
-    HACKLETS_CMD="git --git-dir=${HACKLETS_MASTERDIR} --work-tree=${HACKLETS_CONTAINER_DIR}"
+    hacklets_activate_this
 
     cmd "mkdir -p ${HACKLETS_MASTERDIR}"
     if [[ 0 != $? ]]; then return $?; fi
@@ -243,10 +242,10 @@ function hacklets_adopt() {
     if [[ $isconflict && $conflictsolved ]]; then
         msg_info "TODO: there was a conflict, now it's solved. Show notification, prompt for action"
     fi
-    hacklets_cmd tag -a -m "installed $hname" install-$hname
+    hacklets_cmd tag -a -m "installed $hname" "install-$hname"
     if [[ 0 != $? ]]; then return $?; fi
     local HEAD=`${HACKLETS_CMD} rev-parse HEAD`
-    hacklets_cmd config --local --add profiles.$profname.$hname.$branchname $HEAD
+    hacklets_cmd config --local --add "profiles.$profname.$hname.$branchname" "$HEAD"
     if [[ 0 != $? ]]; then return $?; fi
     return 0
 }
