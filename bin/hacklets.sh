@@ -240,7 +240,7 @@ function hacklets_adopt() {
         fi
     fi
     if [[ $isconflict && $conflictsolved ]]; then
-        echo "FOO BAR"
+        msg_info "TODO: there was a conflict, now it's solved. Show notification, prompt for action"
     fi
     hacklets_cmd tag -a -m "installed $hname" install-$hname
     if [[ 0 != $? ]]; then return $?; fi
