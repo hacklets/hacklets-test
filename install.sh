@@ -9,12 +9,10 @@ git --git-dir=.hacklets/master config core.bare false
 git --git-dir=.hacklets/master config core.worktree "../../"
 git --git-dir=.hacklets/master checkout
 
-echo "Your real name will be used as a display name in your commits, on github, \
-and in any similar situations."
+echo "Your real name will be used as a display name in your commits, on github, and in any similar situations."
 SUGGEST=`getent passwd "$USER" | cut -d ':' -f 5`
 read -e -p "Your real name: " -i "${SUGGEST}" REAL_NAME
-echo "Your e-mail should be the same as the one used to register on github, \
-for easier github integration."
+echo "Your e-mail should be the same as the one used to register on github, for easier github integration."
 read -e -p "Your E-Mail: " -i "${USER}@${HOSTNAME}" EMAIL
 
 source bin/scripts.d/bsfl
