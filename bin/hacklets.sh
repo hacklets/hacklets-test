@@ -8,7 +8,6 @@ HACKLETS_MASTER_TPL_DIR="${HACKLETS_DIST_DIR}/hacklets.d/templates/master"
 
 #TODO: here source one file (hook) to overwrite the lines above
 
-
 alias hacklets-demo_repos='hacklets_demo_repos'
 alias hacklets-new_profile='hacklets_new_profile'
 #alias hacklets="$HACKLETS_CMD"
@@ -57,6 +56,13 @@ function hacklets_debug_state() {
     HACKLETS_MASTERDIR: $HACKLETS_MASTERDIR
     HACKLETS_MASTER_TPL_DIR: $HACKLETS_MASTER_TPL_DIR"
 }
+
+##
+# executes git with the right values for --git-dir and --work-tree
+#
+# it catches the output and logs it accordingly, and returns the
+# status of the git command
+##
 function hacklets_cmd() {
     #working:
     #   array=( "$@" );
@@ -129,7 +135,7 @@ function hacklets_init() {
 ##
 # fetch a hacklet, it's like fetching a repo, but a little bit more twisted (so we maintain flexibility for commads like "hacklet checkout")
 ##
-function hacklet_fetch() {
+function hacklets_fetch() {
     if [[ ! -n $1 ]]; then
         msg_fail "first param: URL or name, if name, provide URL as second param"
         return 1;
@@ -160,6 +166,9 @@ function hacklets_update() {
     return 1 # TODO
 }
 
+##
+# lists all the available hacklets in the current container
+##
 function hacklets_list() {
     hacklets_cmd config --local --get-all remotes.hacklets
     return $?
@@ -176,7 +185,7 @@ function hacklets_new_profile() {
         return 1;
     fi
     local profname="$1"
-    if ! _hacklet_profile_exists "${profname}"; then
+    if ! _hacklets_profile_exists "${profname}"; then
         msg_fail "Profile $profname already exists"
         return 1
     fi
@@ -193,8 +202,8 @@ function hacklets_new_profile() {
 ##
 # adopt an existing (fetched) hacklet into the current profile
 ##
-function hacklet_adopt() {
-    eval $(_hacklet_get_active_profile)
+function hacklets_adopt() {
+    eval $(_hacklets_get_active_profile)
     if [[ ! $RETURN ]]; then
         msg_fail "Please activate a profile first"
         unset RETURN
@@ -241,13 +250,18 @@ function hacklet_adopt() {
     return 0
 }
 
-function hacklet_disown() {
+##
+# uninstalls a hacklet from the current profile
+#
+# work in progress
+##
+function _hacklets_disown() {
     if [[ ! -n $1 ]]; then
         msg_fail "Please provide a hacklet name"
         return 1
     fi
     local hname="$1"
-    eval $(_hacklet_get_active_profile)
+    eval $(_hacklets_get_active_profile)
     local profname=$RETURN
     if [[ ! $RETURN ]]; then
         msg_fail "Please activate a profile first"
@@ -269,7 +283,7 @@ function hacklet_disown() {
 ###############################################################################
 # internal function, do not rely on these
 ###############################################################################
-function _hacklet_profile_exists() {
+function _hacklets_profile_exists() {
     if [[ 0 != `hacklets_cmd branch --no-color --list "profile/$1"` ]]; then
         return 0
     else
@@ -278,7 +292,7 @@ function _hacklet_profile_exists() {
 }
 
 
-function _hacklet_get_active_profile() {
+function _hacklets_get_active_profile() {
     local RETURN=`hacklets_cmd branch -a --no-color --list "profile/*" | grep '^* ' | sed 's/* profile\///'`
     if [[ -z $RETURN ]];
         then return 1
