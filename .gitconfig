@@ -1,0 +1,14 @@
+[user]
+    name = #TODO
+    email = #TODO
+[color]
+    ui = true
+[alias]
+    wdiff = diff --color-words
+    last = log -1 -p HEAD
+    st = status
+    co = checkout
+    ci = commit
+    br = branch
+    sm = submodule
+    cp = cherry-pick
