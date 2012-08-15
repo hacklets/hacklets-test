@@ -114,13 +114,17 @@ hacklets to make it possible to manage the hacklets.
 
 ## Concepts FAQ
 
-### Cand I rename this or that?
-You can rename pretty much any directory (TODO: implement this), except the
-`profile/` prefix for profiles. Please note that strange things may happen if
-you rename critical parts, like the default name of the *backend directory*,
-strange things which may, or may not be what you wanted :-)
+### Cand I rename this or that?  You can rename pretty much any directory
+(TODO: implement this), except the `profile/` prefix for profiles. Please note
+that strange things may happen if you rename critical parts, like the default
+name of the *backend directory*, strange things which may, or may not be what
+you wanted. Feel free to hack around it :-)
 
 # Installation
+
+TODO: before proceeding, make sure you know the basic git operations. If you're
+a non-programmer or if you want to take it slowly, we've written a guide for
+you: TODO link to wiki page here.
 
 TODO
 
