@@ -20,3 +20,15 @@ hacklets_adopt foo
 #   h describe --tags $(h rev-list -1 install-abc^)
 # where install-abc is the tag name
 #
+
+
+## bootstrapping hacklets
+
+cd /tmp && rm -rf $USER && mkdir $USER && cd $USER
+
+mkdir -p .hacklets/hacklets.git
+git clone --bare file:///home/flav/projects/homedir/hacklets.git .hacklets/hacklets.git
+ln -s hacklets.git .hacklets/master
+git --git-dir=.hacklets/master config core.bare false
+git --git-dir=.hacklets/master config core.worktree "../../"
+
