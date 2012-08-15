@@ -1,34 +1,69 @@
-HACKLETS_BASEDIR_NAME=.hacklets
-HACKLETS_REPODIR_NAME="${HACKLETS_BASEDIR_NAME}/master"
+# these two are fixed in stone, unless you know what you're doing
 HACKLETS_DIST_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 HACKLETS_EXEC_NAME="${0%/*}"
+
+HACKLETS_BACKENDDIR_NAME=.hacklets
+HACKLETS_MASTERDIR_NAME="${HACKLETS_BACKENDDIR_NAME}/master"
 HACKLETS_MASTER_TPL_DIR="${HACKLETS_DIST_DIR}/hacklets.d/templates/master"
 
-HACKLETS_PWD=`pwd`
-HACKLETS_BASEDIR="${HACKLETS_PWD}/${HACKLETS_BASEDIR_NAME}"
-HACKLETS_REPODIR="${HACKLETS_PWD}/${HACKLETS_REPODIR_NAME}"
+#TODO: here source one file (hook) to overwrite the lines above
 
-alias hacklets-init='hacklets_init'
+
 alias hacklets-demo_repos='hacklets_demo_repos'
 alias hacklets-new_profile='hacklets_new_profile'
-alias h="$HACKLETS_CMD"
+#alias hacklets="$HACKLETS_CMD"
 
-LOG_ENABLED="yes"
-DONOTLOG="no"
-source "$HACKLETS_DIST_DIR/scripts.d/bsfl"
-SYSLOG_ENABLED="yes"
-DONOTLOG="no"
-LOG_FILE="${HACKLETS_BASEDIR}/hacklets.log"
-SYSLOG_TAG="hacklets"
+##
+# activate the current directory as a container
+##
+function hacklets_activate_this() {
+    HACKLETS_CONTAINER_DIR=`pwd`
+    HACKLETS_BACKENDDIR="${HACKLETS_CONTAINER_DIR}/${HACKLETS_BACKENDDIR_NAME}"
+    HACKLETS_MASTERDIR="${HACKLETS_CONTAINER_DIR}/${HACKLETS_MASTERDIR_NAME}"
 
+    ## internal variables
+    LOG_ENABLED="yes"
+    DONOTLOG="no"
+    source "$HACKLETS_DIST_DIR/scripts.d/bsfl"
+    SYSLOG_ENABLED="yes"
+    DONOTLOG="no"
+    LOG_FILE="${HACKLETS_BACKENDDIR}/hacklets.log"
+    SYSLOG_TAG="hacklets"
+}
 
+# TODO move this call above the function
+hacklets_activate_this
+
+##
+# deactivate the current directory as a container
+##
+function hacklets_deactivate_this() {
+    unset HACKLETS_CONTAINER_DIR HACKLETS_BACKENDDIR HACKLETS_MASTERDIR
+    unset LOG_ENABLED DONOTLOG SYSLOG_ENABLED LOG_FILE SYSLOG_TAG
+}
+##
+# debug state of the key variables
+##
+function hacklets_debug_state() {
+    echo "Key variables:
+    HACKLETS_DIST_DIR: $HACKLETS_DIST_DIR
+    HACKLETS_EXEC_NAME: $HACKLETS_EXEC_NAME 
+    ---------------------------------------------------------------------------
+    HACKLETS_MASTERDIR_NAME: $HACKLETS_MASTERDIR_NAME
+    HACKLETS_BACKENDDIR_NAME: $HACKLETS_BACKENDDIR_NAME
+    ---------------------------------------------------------------------------
+    HACKLETS_CONTAINER_DIR: $HACKLETS_CONTAINER_DIR
+    HACKLETS_BACKENDDIR: $HACKLETS_BACKENDDIR
+    HACKLETS_MASTERDIR: $HACKLETS_MASTERDIR
+    HACKLETS_MASTER_TPL_DIR: $HACKLETS_MASTER_TPL_DIR"
+}
 function hacklets() {
     #working:
     #   array=( "$@" );
     #   OUT=`cat "${array[@]}"`
     ########
     argv=("$@");
-    local HACKLETS_RESULT=`git --git-dir=${HACKLETS_REPODIR} --work-tree=${HACKLETS_PWD} "${argv[@]}" 2>&1`
+    local HACKLETS_RESULT=`git --git-dir=${HACKLETS_MASTERDIR} --work-tree=${HACKLETS_CONTAINER_DIR} "${argv[@]}" 2>&1`
     local ERROR="$?"
 
     ############ begin: building the command, preserve quotes around parameters
@@ -52,7 +87,7 @@ function hacklets() {
     else
         msg_fail "${SHORT_COMMAND:0:$[COLUMNS-15]}"
     fi
-    #TODO long along with this, also $HACKLETS_REPODIR and HACKLETS_PWD
+    #TODO long along with this, also $HACKLETS_MASTERDIR and HACKLETS_CONTAINER_DIR
     log "Command: $COMMAND gave: '$HACKLETS_RESULT'"
     if [[ ! -z $HACKLETS_RESULT ]]; then
         echo "-------------------------------------------------------------------------------"
@@ -62,33 +97,33 @@ function hacklets() {
     return "$ERROR"
 }
 ##
-# initialize $HACKLETS_REPODIR_NAME (in the CWD) as a hacklets container
+# initialize $HACKLETS_MASTERDIR_NAME (in the CWD) as a hacklets container
 # 
 # @param alternative CWD
 ##
 function hacklets_init() {
     if [[ ! -z $1 ]]; then
-        HACKLETS_PWD="$1"
+        HACKLETS_CONTAINER_DIR="$1"
     else
-        HACKLETS_PWD=`pwd`
+        HACKLETS_CONTAINER_DIR=`pwd`
     fi
 
-    HACKLETS_BASEDIR="${HACKLETS_PWD}/${HACKLETS_BASEDIR_NAME}"
-    HACKLETS_REPODIR="${HACKLETS_PWD}/${HACKLETS_REPODIR_NAME}"
-    HACKLETS_CMD="git --git-dir=${HACKLETS_REPODIR} --work-tree=${HACKLETS_PWD}"
+    HACKLETS_BACKENDDIR="${HACKLETS_CONTAINER_DIR}/${HACKLETS_BACKENDDIR_NAME}"
+    HACKLETS_MASTERDIR="${HACKLETS_CONTAINER_DIR}/${HACKLETS_MASTERDIR_NAME}"
+    HACKLETS_CMD="git --git-dir=${HACKLETS_MASTERDIR} --work-tree=${HACKLETS_CONTAINER_DIR}"
 
-    cmd "mkdir -p ${HACKLETS_REPODIR}"
+    cmd "mkdir -p ${HACKLETS_MASTERDIR}"
     if [[ 0 != $? ]]; then return $?; fi
-    cd ${HACKLETS_REPODIR}
+    cd ${HACKLETS_MASTERDIR}
     if [[ 0 != $? ]]; then
-        msg_fail "cd ${HACKLETS_REPODIR}"
+        msg_fail "cd ${HACKLETS_MASTERDIR}"
         return $?;
     fi
-    msg_ok "cd ${HACKLETS_REPODIR}"
+    msg_ok "cd ${HACKLETS_MASTERDIR}"
     cmd "git init --bare --template=${HACKLETS_MASTER_TPL_DIR}"
     if [[ 0 != $? ]]; then return $?; fi
-    cd $HACKLETS_PWD
-    msg_ok "cd $HACKLETS_PWD"
+    cd $HACKLETS_CONTAINER_DIR
+    msg_ok "cd $HACKLETS_CONTAINER_DIR"
 }
 
 ##
@@ -109,9 +144,9 @@ function hacklet_fetch() {
         msg_fail "TODO"
         return 1
     fi
-    cmd "git clone --recursive --bare "${hurl}" "${HACKLETS_BASEDIR}/${hname}.git""
+    cmd "git clone --recursive --bare "${hurl}" "${HACKLETS_BACKENDDIR}/${hname}.git""
     if [[ 0 != $? ]]; then return $?; fi
-    hacklets remote add hacklet/${hname} ${HACKLETS_BASEDIR}/${hname}.git
+    hacklets remote add hacklet/${hname} ${HACKLETS_BACKENDDIR}/${hname}.git
     if [[ 0 != $? ]]; then return $?; fi
     # TODO the following gives "warning: no common commits", see how you can fix it
     hacklets fetch hacklet/${hname}
@@ -147,10 +182,10 @@ function hacklets_new_profile() {
     fi
     hacklets checkout --orphan profile/${profname}
     if [[ 0 != $? ]]; then return $?; fi
-    echo "This is the beginning of profile ${profname}." > "${HACKLETS_PWD}/README.txt"
-    hacklets add "${HACKLETS_PWD}/README.txt"
+    echo "This is the beginning of profile ${profname}." > "${HACKLETS_CONTAINER_DIR}/README.txt"
+    hacklets add "${HACKLETS_CONTAINER_DIR}/README.txt"
     hacklets commit -q -m "This is the beginning of profile ${profname}"
-    hacklets rm -q "${HACKLETS_PWD}/README.txt"
+    hacklets rm -q "${HACKLETS_CONTAINER_DIR}/README.txt"
     hacklets commit -q -m "profile ready to be populated with hacklets"
     hacklets tag -a -m "profile $profname" start-$profname
 }
@@ -184,8 +219,8 @@ function hacklet_adopt() {
     hacklets merge -m "$mergemsg" "hacklet/${hname}/${branchname}"
     local isconflict=0
     local conflictsolved=0
-    if [[ -f "${HACKLETS_REPODIR}/MERGE_MSG" ]]; then
-        grep -q '^Conflicts:' "${HACKLETS_REPODIR}/MERGE_MSG"
+    if [[ -f "${HACKLETS_MASTERDIR}/MERGE_MSG" ]]; then
+        grep -q '^Conflicts:' "${HACKLETS_MASTERDIR}/MERGE_MSG"
         isconflict=1
         if [[ 0 == $? ]]; then 
             hacklets mergetool -y

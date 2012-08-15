@@ -76,7 +76,7 @@ git merge -m "using hacklet/second/master in profile test" hacklet/second/master
 ##### HACKLETS
 alias hacklets.source='source ~/projects/homedir/hacklets/bin/hacklets.source' && hacklets.source && hacklets_demo_repos
 
-cd .. && rm -rf flav && mkdir flav && cd flav && hacklets.source && hacklets-init
+cd .. && rm -rf flav && mkdir flav && cd flav && hacklets.source && hacklets_init
 
 hacklet_fetch abc /tmp/hacklets-mocs/firstrepo.git
 hacklet_fetch def /tmp/hacklets-mocs/secondrepo.git
