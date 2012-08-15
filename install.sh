@@ -20,4 +20,4 @@ read -e -p "Your E-Mail: " -i "${USER}@${HOSTNAME}" EMAIL
 source bin/scripts.d/bsfl
 
 cmd "git config --global user.email ${EMAIL}"
-cmd "git config --global user.name ${REAL_NAME}"
+cmd "git config --global user.name '${REAL_NAME}'"
