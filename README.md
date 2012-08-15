@@ -126,9 +126,34 @@ TODO: before proceeding, make sure you know the basic git operations. If you're
 a non-programmer or if you want to take it slowly, we've written a guide for
 you: TODO link to wiki page here.
 
-TODO
+TODO: step by step guide
+
+Now that you have installed it by hand once, you can install it on other
+machines with a little bit of automatization:
+
+    curl https://raw.github.com/hacklets/hacklets-test/deploy/install.sh -L -o - | bash
+
+To create test users, run as root:
+
+    USER=foo && PASS=bar && useradd -p $(perl -e"print crypt('$PASS', '$USER')") $USER && mkdir /home/$USER && chown -R $USER:users /home/$USER
+
+To log in:
+
+    su --login foo
+
+To remove the test user, log out from that account, and as root:
+
+    userdel foo && rm -rf /home/foo
 
 # Tutorial
+
+In this tutorial, we will try to get a minimal working environment built on top
+of the hacklets infrastructure. We will use existing hacklets, as well as write
+our own.
+
+Please note that *hacklets* is a work in progress and it's not stable, so look
+carefully at the commands executed and try to learn from them. Read the
+manpages if necessary.
 
 TODO
 
