@@ -126,8 +126,6 @@ TODO: before proceeding, make sure you know the basic git operations. If you're
 a non-programmer or if you want to take it slowly, we've written a guide for
 you: TODO link to wiki page here.
 
-TODO: step by step guide
-
 To create test users, run as root:
 
     USER=foo && PASS=bar && useradd -p $(perl -e"print crypt('$PASS', '$USER')") $USER && mkdir /home/$USER && chown -R $USER:users /home/$USER
@@ -139,6 +137,8 @@ To log in:
 To remove the test user, log out from that account, and as root:
 
     userdel foo && rm -rf /home/foo
+
+TODO: step by step guide
 
 Now that you have installed it by hand once, you can install it on other
 machines with a little bit of automatization:
