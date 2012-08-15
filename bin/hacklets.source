@@ -57,7 +57,7 @@ function hacklets_debug_state() {
     HACKLETS_MASTERDIR: $HACKLETS_MASTERDIR
     HACKLETS_MASTER_TPL_DIR: $HACKLETS_MASTER_TPL_DIR"
 }
-function hacklets() {
+function hacklets_cmd() {
     #working:
     #   array=( "$@" );
     #   OUT=`cat "${array[@]}"`
@@ -68,8 +68,8 @@ function hacklets() {
 
     ############ begin: building the command, preserve quotes around parameters
     # the idea: multi-words params need to be quoted
-    local COMMAND="hacklets"
-    local SHORT_COMMAND="hacklets"
+    local COMMAND="hacklets_cmd"
+    local SHORT_COMMAND="hacklets_cmd"
     for word in "${argv[@]}"; do
         words="${word//[^\ ]} "
         if [[ ${#words} > 1 ]]; then
@@ -146,12 +146,12 @@ function hacklet_fetch() {
     fi
     cmd "git clone --recursive --bare "${hurl}" "${HACKLETS_BACKENDDIR}/${hname}.git""
     if [[ 0 != $? ]]; then return $?; fi
-    hacklets remote add hacklet/${hname} ${HACKLETS_BACKENDDIR}/${hname}.git
+    hacklets_cmd remote add hacklet/${hname} ${HACKLETS_BACKENDDIR}/${hname}.git
     if [[ 0 != $? ]]; then return $?; fi
     # TODO the following gives "warning: no common commits", see how you can fix it
-    hacklets fetch hacklet/${hname}
+    hacklets_cmd fetch hacklet/${hname}
     if [[ 0 != $? ]]; then return $?; fi
-    hacklets config --local --add remotes.hacklets hacklet/${hname}
+    hacklets_cmd config --local --add remotes.hacklets hacklet/${hname}
     if [[ 0 != $? ]]; then return $?; fi
     return 0
 }
@@ -161,7 +161,7 @@ function hacklets_update() {
 }
 
 function hacklets_list() {
-    hacklets config --local --get-all remotes.hacklets
+    hacklets_cmd config --local --get-all remotes.hacklets
     return $?
 }
 
@@ -180,14 +180,14 @@ function hacklets_new_profile() {
         msg_fail "Profile $profname already exists"
         return 1
     fi
-    hacklets checkout --orphan profile/${profname}
+    hacklets_cmd checkout --orphan profile/${profname}
     if [[ 0 != $? ]]; then return $?; fi
     echo "This is the beginning of profile ${profname}." > "${HACKLETS_CONTAINER_DIR}/README.txt"
-    hacklets add "${HACKLETS_CONTAINER_DIR}/README.txt"
-    hacklets commit -q -m "This is the beginning of profile ${profname}"
-    hacklets rm -q "${HACKLETS_CONTAINER_DIR}/README.txt"
-    hacklets commit -q -m "profile ready to be populated with hacklets"
-    hacklets tag -a -m "profile $profname" start-$profname
+    hacklets_cmd add "${HACKLETS_CONTAINER_DIR}/README.txt"
+    hacklets_cmd commit -q -m "This is the beginning of profile ${profname}"
+    hacklets_cmd rm -q "${HACKLETS_CONTAINER_DIR}/README.txt"
+    hacklets_cmd commit -q -m "profile ready to be populated with hacklets"
+    hacklets_cmd tag -a -m "profile $profname" start-$profname
 }
 
 ##
@@ -214,18 +214,18 @@ function hacklet_adopt() {
     fi
     local hname="$1"
 
-    hacklets tag -a -m "before installing $hname" "before-install-$hname"
+    hacklets_cmd tag -a -m "before installing $hname" "before-install-$hname"
     local mergemsg="using hacklet/$hname/$branchname in profile $profname"
-    hacklets merge -m "$mergemsg" "hacklet/${hname}/${branchname}"
+    hacklets_cmd merge -m "$mergemsg" "hacklet/${hname}/${branchname}"
     local isconflict=0
     local conflictsolved=0
     if [[ -f "${HACKLETS_MASTERDIR}/MERGE_MSG" ]]; then
         grep -q '^Conflicts:' "${HACKLETS_MASTERDIR}/MERGE_MSG"
         isconflict=1
         if [[ 0 == $? ]]; then 
-            hacklets mergetool -y
+            hacklets_cmd mergetool -y
             if [[ 0 == $? ]]; then
-                hacklets commit -a
+                hacklets_cmd commit -a
                 conflictsolved=1
             fi
         fi
@@ -233,10 +233,10 @@ function hacklet_adopt() {
     if [[ $isconflict && $conflictsolved ]]; then
         echo "FOO BAR"
     fi
-    hacklets tag -a -m "installed $hname" install-$hname
+    hacklets_cmd tag -a -m "installed $hname" install-$hname
     if [[ 0 != $? ]]; then return $?; fi
     local HEAD=`${HACKLETS_CMD} rev-parse HEAD`
-    hacklets config --local --add profiles.$profname.$hname.$branchname $HEAD
+    hacklets_cmd config --local --add profiles.$profname.$hname.$branchname $HEAD
     if [[ 0 != $? ]]; then return $?; fi
     return 0
 }
@@ -257,20 +257,20 @@ function hacklet_disown() {
     unset RETURN
     local COMMIT=`$HACKLETS_CMD config --local --get-regexp profiles.$profname.$hname.*`
     if [[ 0 != $? ]]; then
-        msg_fail "hacklets config --local --get-regexp profiles.$profname.$hname.*"
+        msg_fail "hacklets_cmd config --local --get-regexp profiles.$profname.$hname.*"
         return $?;
     fi
-    msg_ok "hacklets config --local --get-regexp profiles.$profname.$hname.*"
+    msg_ok "hacklets_cmd config --local --get-regexp profiles.$profname.$hname.*"
     #TODO check if 1 == `echo "$COMMIT" | wc -l`, if not, then error
     local COMMIT=`echo "$COMMIT" | cut -d ' ' -f 2`
-    hacklets revert -m 1 $COMMIT
+    hacklets_cmd revert -m 1 $COMMIT
 }
 
 ###############################################################################
 # internal function, do not rely on these
 ###############################################################################
 function _hacklet_profile_exists() {
-    if [[ 0 != `hacklets branch --no-color --list "profile/$1"` ]]; then
+    if [[ 0 != `hacklets_cmd branch --no-color --list "profile/$1"` ]]; then
         return 0
     else
         return 1
@@ -279,7 +279,7 @@ function _hacklet_profile_exists() {
 
 
 function _hacklet_get_active_profile() {
-    local RETURN=`hacklets branch -a --no-color --list "profile/*" | grep '^* ' | sed 's/* profile\///'`
+    local RETURN=`hacklets_cmd branch -a --no-color --list "profile/*" | grep '^* ' | sed 's/* profile\///'`
     if [[ -z $RETURN ]];
         then return 1
     fi
