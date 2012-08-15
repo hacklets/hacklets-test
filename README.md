@@ -147,16 +147,6 @@ machines with a little bit of automatization:
 
 After following the wizard, log out and log back in again.
 
-Before using a container, you must initialize it:
-
-    hacklets_activate_this
-
-This will keep the container initialized in the current shell. If you open
-a new shell and `cd` to that directory, you have to initialize the container
-again.
-
-TODO: alias `cd` to do `hacklets_activate_this` transparently
-
 You do not need to do this more than once per user, per machine. Installing
 hacklets in the **home container** is done only once.
 
@@ -174,6 +164,24 @@ Hacklets display all the commands it issues, so you always see what's doing
 and, in case of a failure, you get an idea of where to go hacking and correct
 the bug.
 
+Before using a container, you must initialize it:
+
+    hacklets_activate_this
+
+This will keep the container initialized in the current shell. If you open
+a new shell and `cd` to that directory, you have to initialize the container
+again.
+
+TODO: alias `cd` to do `hacklets_activate_this` transparently
+
+Hacklets can only be used together when bundled in profiles. So let's create
+a new profile:
+
+    hacklets_new_profile test
+
+You could have a profile for a "python programmer", another one for a "C++
+programmer", and so on.
+
 Download a hacklet and make it available for use in the current container:
 
     hacklets_fetch sane-defaults git://github.com/hacklets/sane-defaults.git
@@ -182,13 +190,27 @@ Download a hacklet and make it available for use in the current container:
 a good practice to keep it the same as the remote one.  The second parameter is
 the URL of the hacklet. This can be any bare repository.
 
-Hacklets can only be used together when bundled in profiles. So let's create a new profile:
-
-    hacklets_new_profile test
-
-And now let's use the hacklet `sane-defaults`:
+And now let's use the hacklet `sane-defaults` in the currently active profile:
 
     hacklets_adopt sane-defaults
+
+During all these steps, hacklets has shown you every command it has issued. The
+command `hacklets_cmd` is basically a `git` command with the right values for
+the **working tree** and the **git directory**. you can see the actual command
+in clear text by typing:
+
+    echo $HACKLETS_CMD      # which is a variable, instead of the function hacklets_cmd
+
+Now enter
+
+    hacklets_debug_state
+
+to see the values of the most influential variables and make the connections
+with the values of the parameters you've seen in `$HACKLETS_CMD`.
+
+All these commands are functions with the same name in the script
+`bin/hacklets.sh`, and the variables have the same identifiers too, so it
+should be easy as a **hacklerter** to start hacking hacklets right away.
 
 TODO: more docs, clearer, funnier, awesomer
 
