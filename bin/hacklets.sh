@@ -126,6 +126,7 @@ function hacklets_init() {
         return $?;
     fi
     msg_ok "cd ${HACKLETS_MASTERDIR}"
+    #TODO: use $GIT_TEMPLATE_DIR, to give the user the chance to override it via --template or GIT_TEMPLATE_DIR
     cmd "git init --bare --template=${HACKLETS_MASTER_TPL_DIR}"
     if [[ 0 != $? ]]; then return $?; fi
     cd $HACKLETS_CONTAINER_DIR
