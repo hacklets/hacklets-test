@@ -1,7 +1,7 @@
 [core]
     bare = false
     worktree = ../../
-    editor = ~/bin/vim
+    editor = ~/bin/editor
 [color]
     ui = true
 [alias]
