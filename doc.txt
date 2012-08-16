@@ -17,10 +17,14 @@ hacklets_adopt foo
 # uninstalling a hacklet:
 # ------------------------
 # show the commit where we should reset to
-#   h describe --tags $(h rev-list -1 install-abc^)
+#   hacklets_cmd describe --tags $(h rev-list -1 install-abc^)
 # where install-abc is the tag name
 #
-
+# show the commit we should merge to
+#   hacklets_cmd rev-list --first-parent --reverse install-def..HEAD | head -1
+# 
+# hacklets_cmd reset --hard <reset-commit>
+# hacklets_cmd merge <merge commit>
 
 ## bootstrapping hacklets
 
