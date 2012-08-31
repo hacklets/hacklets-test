@@ -34,6 +34,7 @@ else
     msg_ok "git config --replace-all --global user.name '${REAL_NAME}'"
 fi
 
+source .bash_profile
+
 echo "We are going to relogin you on your system, please provide your password"
-su - `whoami`
-echo "test"
+#su - `whoami`
