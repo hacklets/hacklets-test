@@ -33,3 +33,6 @@ if [[ 0 != $? ]]; then
 else
     msg_ok "git config --replace-all --global user.name '${REAL_NAME}'"
 fi
+
+echo "We are going to relogin you on your system, please provide your password"
+su - `whoami`
