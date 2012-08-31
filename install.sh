@@ -3,12 +3,12 @@
 #TODO: error checking throughout the file
 
 [ ! -d .hacklets/hacklets.git ] && mkdir -p .hacklets/hacklets.git
-[ ! -f .hacklets/hacklets.git/config ] && git clone --bare git://github.com/hacklets/hacklets-test.git .hacklets/hacklets.git
+[ ! -f .hacklets/hacklets.git/config ] && git clone -b master --bare git://github.com/hacklets/hacklets-test.git .hacklets/hacklets.git
 [ ! -h .hacklets/master ] && ln -s hacklets.git .hacklets/master
 
 git --git-dir=.hacklets/master config core.bare false
 git --git-dir=.hacklets/master config core.worktree "../../"
-git --git-dir=.hacklets/master checkout -b master
+git --git-dir=.hacklets/master checkout
 
 echo "Your real name will be used as a display name in your commits, on github, and in any similar situations."
 SUGGEST=`getent passwd "$USER" | cut -d ':' -f 5`
