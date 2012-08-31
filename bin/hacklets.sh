@@ -33,9 +33,6 @@ function hacklets_activate_this() {
     SYSLOG_TAG="hacklets"
 }
 
-# TODO move this call in env/hacklets.sh
-hacklets_activate_this
-
 ##
 # deactivate the current directory as a container
 ##
