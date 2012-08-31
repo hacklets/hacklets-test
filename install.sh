@@ -26,7 +26,7 @@ else
     msg_ok "git config --replace-all --global user.email '${EMAIL}'"
 fi
 
-git config --replace-all --global user.name '${REAL_NAME}'
+git config --replace-all --global user.name "${REAL_NAME}"
 if [[ 0 != $? ]]; then 
     msg_fail "git config --replace-all --global user.name '${REAL_NAME}'"
     return $?;
