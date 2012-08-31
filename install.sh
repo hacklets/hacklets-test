@@ -8,7 +8,7 @@
 
 git --git-dir=.hacklets/master config core.bare false
 git --git-dir=.hacklets/master config core.worktree "../../"
-git --git-dir=.hacklets/master checkout
+git --git-dir=.hacklets/master checkout -b master
 
 echo "Your real name will be used as a display name in your commits, on github, and in any similar situations."
 SUGGEST=`getent passwd "$USER" | cut -d ':' -f 5`
