@@ -35,6 +35,7 @@ else
 fi
 
 source .bash_profile
+hacklets_cmd ci -am "installation of hacklets finished"
 
 echo "We are going to relogin you on your system, please provide your password"
-#su - `whoami`
+su - `whoami`
