@@ -1,4 +1,0 @@
-#!/bin/sh
-
-#TODO: take $MERGE_EDITOR into account
-exec /usr/bin/vimdiff "$@" < `tty` > `tty`

@@ -1,5 +1,0 @@
-#!/bin/sh
-
-#TODO: take $EDITOR into account
-
-exec /usr/bin/vim "$@" < `tty` > `tty`

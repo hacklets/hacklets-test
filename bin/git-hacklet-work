@@ -1,8 +1,0 @@
-#!/bin/bash
-
-if [ ! -n "$1" ]; then
-    echo "Must pass name.";
-    exit 1;
-fi
-
-git hacklet run "$1" "$SHELL"
