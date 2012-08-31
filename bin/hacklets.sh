@@ -21,7 +21,7 @@ HACKLETS_CONTAINER_DIR=`pwd`
 function hacklets_activate_this() {
     HACKLETS_BACKENDDIR="${HACKLETS_CONTAINER_DIR}/${HACKLETS_BACKENDDIR_NAME}"
     HACKLETS_MASTERDIR="${HACKLETS_CONTAINER_DIR}/${HACKLETS_MASTERDIR_NAME}"
-    HACKLETS_CMD="git --git-dir=${HACKLETS_MASTERDIR} --work-tree=${HACKLETS_CONTAINER_DIR}"
+    HACKLETS_CMD="/usr/bin/git --git-dir=${HACKLETS_MASTERDIR} --work-tree=${HACKLETS_CONTAINER_DIR}"
 
     ## internal variables
     LOG_ENABLED="yes"
@@ -33,7 +33,7 @@ function hacklets_activate_this() {
     SYSLOG_TAG="hacklets"
 }
 
-# TODO move this call above the function
+# TODO move this call in env/hacklets.sh
 hacklets_activate_this
 
 ##
@@ -72,7 +72,7 @@ function hacklets_cmd() {
     #   OUT=`cat "${array[@]}"`
     ########
     argv=("$@");
-    local HACKLETS_RESULT=`git --git-dir=${HACKLETS_MASTERDIR} --work-tree=${HACKLETS_CONTAINER_DIR} "${argv[@]}" 2>&1`
+    local HACKLETS_RESULT=`/usr/bin/git --git-dir=${HACKLETS_MASTERDIR} --work-tree=${HACKLETS_CONTAINER_DIR} "${argv[@]}" 2>&1`
     local ERROR="$?"
 
     ############ begin: building the command, preserve quotes around parameters
@@ -126,7 +126,7 @@ function hacklets_init() {
     fi
     msg_ok "cd ${HACKLETS_MASTERDIR}"
     #TODO: use $GIT_TEMPLATE_DIR, to give the user the chance to override it via --template or GIT_TEMPLATE_DIR
-    cmd "git init --bare --template=${HACKLETS_MASTER_TPL_DIR}"
+    cmd "/usr/bin/git init --bare --template=${HACKLETS_MASTER_TPL_DIR}"
     if [[ 0 != $? ]]; then return $?; fi
     cd $HACKLETS_CONTAINER_DIR
     msg_ok "cd $HACKLETS_CONTAINER_DIR"
@@ -150,7 +150,7 @@ function hacklets_fetch() {
         msg_fail "TODO"
         return 1
     fi
-    cmd "git clone --recursive --bare "${hurl}" "${HACKLETS_BACKENDDIR}/${hname}.git""
+    cmd "/usr/bin/git clone --recursive --bare "${hurl}" "${HACKLETS_BACKENDDIR}/${hname}.git""
     if [[ 0 != $? ]]; then return $?; fi
     hacklets_cmd remote add hacklet/${hname} ${HACKLETS_BACKENDDIR}/${hname}.git
     if [[ 0 != $? ]]; then return $?; fi
@@ -315,14 +315,14 @@ function _hacklets_mock_repo() {
     pushd /tmp/hacklets-mocs/
     mkdir "${name}repo.git"
     cd "${name}repo.git"
-    git --bare init
+    /usr/bin/git --bare init
     cd ../checkouts/
-    git clone --recursive "../${name}repo.git"
+    /usr/bin/git clone --recursive "../${name}repo.git"
     cd "${name}repo"
     echo "testing $name repo" > $file
-    git add $file
-    git commit -m "initial commit of $name repo"
-    git push origin master
+    /usr/bin/git add $file
+    /usr/bin/git commit -m "initial commit of $name repo"
+    /usr/bin/git push origin master
     popd
 }
 function hacklets_demo_repos() {
