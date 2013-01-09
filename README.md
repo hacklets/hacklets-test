@@ -6,6 +6,8 @@
 * [Installation](#installation)
 * [Developers' Tutorial](#developers-tutorial)
 
+### WARNING: this is a prototype, the name of the project will change!
+
 # What are Hacklets?
 
 Have you ever wished it would be easier to just take someone's configuration
